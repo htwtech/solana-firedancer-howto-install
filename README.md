@@ -4,6 +4,7 @@ sudo apt-get update  -y
 sudo apt upgrade -y
 sudo apt install -y gcc clang git make net-tools mc curl nano bc jq pkg-config libssl-dev  python3-venv git
 ```
+
 ```
 sudo bash -c "cat >/etc/sysctl.d/21-solana-validator.conf <<EOF
 
@@ -20,12 +21,15 @@ vm.max_map_count = 2024000
 fs.nr_open = 2024000
 EOF"
 ```
+
 ```
 sudo sysctl -p /etc/sysctl.d/21-solana-validator.conf
 ```
+
 ```
 echo "Set disable_coredump false" >> /etc/sudo.conf
 ```
+
 ```
 sudo bash -c "cat >/etc/security/limits.d/90-solana-nofiles.conf <<EOF
 # Increase process file descriptor count limit
@@ -33,6 +37,7 @@ sudo bash -c "cat >/etc/security/limits.d/90-solana-nofiles.conf <<EOF
 root - nofile 1024000
 EOF"
 ```
+
 ```
 ulimit -n 1024000
 sudo sysctl -w net.core.rmem_max=26214400
@@ -47,12 +52,16 @@ sudo adduser solana
 grep -q "^DenyUsers" /etc/ssh/sshd_config && sudo sed -i '/^DenyUsers/ s/$/ solana/' /etc/ssh/sshd_config || echo "DenyUsers solana" | sudo tee -a /etc/ssh/sshd_config
 sudo systemctl restart ssh
 ```
+
 ```
 sudo usermod -aG sudo solana
 su - solana
 ```
+
 ```
 rustup install 1.81.0
+```
+
 ```
 git clone --recurse-submodules https://github.com/firedancer-io/firedancer.git
 cd firedancer
@@ -60,6 +69,7 @@ git checkout v0.408.20113
 ./deps.sh
 make -j fdctl solana
 ```
+
 ```
 tee /home/solana/config.toml > /dev/null <<EOF
 user = "solana"
@@ -166,17 +176,21 @@ LimitCORE=infinity
 WantedBy=multi-user.target
 EOF
 ```
+
 ```
 mkdir snapshots
 python3 snapshot-finder.py --min_download_speed 150 --max_snapshot_age 20 --snapshot_path /home/solana/snapshots -r http://api.testnet.solana.com
 deactivate
 ```
+
 ```
 solana -ut catchup --our-localhost 8899
 ```
+
 ```
 sudo systemctl enable solana
 ```
+
 ```
 sudo sed -i 's/^genesis_fetch.*/genesis_fetch = false/' /home/solana/config.toml
 sudo sed -i 's/^snapshot_fetch.*/snapshot_fetch = true/' /home/solana/config.toml
