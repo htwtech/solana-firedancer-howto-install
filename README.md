@@ -155,8 +155,8 @@ max_pending_shred_sets = 512
     tip_distribution_authority = "GZctHpWXmsZC1YHACTGGcHhYxjdRqQvTpYkb9LMvxDib"
     commission_bps = 10000
 EOF
-
-
+```
+```
 sudo tee /etc/systemd/system/solana.service > /dev/null <<EOF
 [Unit]
 Description=Firedancer Validator Service
